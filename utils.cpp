@@ -3,10 +3,10 @@
 #include <memory>
 #include <string.h>
 
-std::string string_format(const char *format, ...)
+std::string string_format(const char* format, ...)
 {
     va_list args, args_size;
-    va_start (args, format);
+    va_start(args, format);
     va_copy(args_size, args);
 
     int size = vsnprintf(nullptr, 0, format, args_size) + 1;
@@ -149,7 +149,7 @@ bool between(const std::string& str, const char* from, const char* to, std::stri
     return false;
 }
 
-void trim(std::string &str)
+void trim(std::string& str)
 {
     while (str.length() > 0 && isspace(str[0]))
     {
@@ -162,7 +162,7 @@ void trim(std::string &str)
     }
 }
 
-std::string trimmed(const std::string &str)
+std::string trimmed(const std::string& str)
 {
     std::string result = str;
 
@@ -171,12 +171,12 @@ std::string trimmed(const std::string &str)
     return result;
 }
 
-bool contains(const std::string &str, const char *substr)
+bool contains(const std::string& str, const char* substr)
 {
     return str.find(substr, 0) != std::string::npos;
 }
 
-std::string before(const std::string& str, const char *to)
+std::string before(const std::string& str, const char* to)
 {
     std::size_t start_pos = str.find(to);
 
@@ -188,7 +188,7 @@ std::string before(const std::string& str, const char *to)
     return std::string();
 }
 
-std::string after(const std::string& str, const char *from)
+std::string after(const std::string& str, const char* from)
 {
     std::size_t start_pos = str.find(from);
 
@@ -200,23 +200,24 @@ std::string after(const std::string& str, const char *from)
     return std::string();
 }
 
-std::vector<std::string> split_vector(const std::string &str, char sep, bool removeEmpty)
+std::vector<std::string> split_vector(const std::string& str, char sep, bool removeEmpty)
 {
     std::list<std::string> list = split(str, sep, removeEmpty);
-    std::vector<std::string> result {
+    std::vector<std::string> result
+    {
         std::make_move_iterator(std::begin(list)),
-                std::make_move_iterator(std::end(list)) };
+        std::make_move_iterator(std::end(list)) };
 
     return result;
 }
 
-std::list<std::string> keys(const std::map<std::string, std::string> &stringMap)
+std::list<std::string> keys(const std::map<std::string, std::string>& stringMap)
 {
     std::list<std::string> result;
 
-    for(std::map<std::string, std::string>::const_iterator it = stringMap.begin(); it != stringMap.end(); ++it)
+    for (std::map<std::string, std::string>::const_iterator it = stringMap.begin(); it != stringMap.end(); ++it)
     {
-      result.push_back(it->first);
+        result.push_back(it->first);
     }
 
     return result;

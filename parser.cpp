@@ -565,7 +565,8 @@ bool Parser::parseLine(const std::string& rawLine)
             return false;
         }
 
-    } break;
+    }
+    break;
 
     case State::SERVER_PARAM:
     case State::CLIENT_PARAM:
@@ -625,7 +626,8 @@ bool Parser::parseLine(const std::string& rawLine)
             mSettings.addServerParameter(name, type, valueMap[name]);
         }
 
-    } break;
+    }
+    break;
 
     }
 
@@ -637,7 +639,7 @@ std::string Parser::getLastError() const
     return mLastError;
 }
 
-bool Parser::isEmptyLine(const std::string &line)
+bool Parser::isEmptyLine(const std::string& line)
 {
     return line.size() == 0;
 }

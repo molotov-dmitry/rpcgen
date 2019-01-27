@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 
     int lineNumber = 0;
 
-    for(std::string line; getline(*filesHandles.fileInputPtr, line ); )
+    for (std::string line; getline(*filesHandles.fileInputPtr, line);)
     {
         if (not parser.parseLine(line))
         {

@@ -7,7 +7,7 @@
 #include <vector>
 #include <stdarg.h>
 
-std::string string_format(const char *format, ...);
+std::string string_format(const char* format, ...);
 
 bool starts_with(const std::string& str, const std::string& start, bool case_sensitive = true);
 bool ends_with(const std::string& str, const std::string& end, bool case_sensitive = true);
@@ -21,7 +21,7 @@ std::list<std::string> split(const std::string& str, char sep, bool removeEmpty 
 std::vector<std::string> split_vector(const std::string& str, char sep, bool removeEmpty = false);
 
 bool between(const std::string& str, const char* from, const char* to, std::string& res);
-std::string before(const std::string &str, const char* to);
+std::string before(const std::string& str, const char* to);
 std::string after(const std::string& str, const char* from);
 
 
@@ -30,6 +30,6 @@ std::string trimmed(const std::string& str);
 
 bool contains(const std::string& str, const char* substr);
 
-std::list<std::string> keys(const std::map<std::string, std::string> &stringMap);
+std::list<std::string> keys(const std::map<std::string, std::string>& stringMap);
 
 #endif // UTILS_H

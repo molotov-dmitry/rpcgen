@@ -43,31 +43,31 @@ public:
     Settings();
 
     std::string rpcName() const;
-    void setRpcName(const std::string &rpcName);
+    void setRpcName(const std::string& rpcName);
 
     std::string returnType() const;
-    void setReturnType(const std::string &returnType);
+    void setReturnType(const std::string& returnType);
 
     std::string funcSend() const;
-    void setFuncSend(const std::string &funcSend);
+    void setFuncSend(const std::string& funcSend);
 
     std::string funcRecv() const;
-    void setFuncRecv(const std::string &funcRecv);
+    void setFuncRecv(const std::string& funcRecv);
 
     std::string errorNoId() const;
-    void setErrorNoId(const std::string &errorNoId);
+    void setErrorNoId(const std::string& errorNoId);
 
     std::string errorLenIn() const;
-    void setErrorLenIn(const std::string &errorLenIn);
+    void setErrorLenIn(const std::string& errorLenIn);
 
     std::string serverArgs() const;
-    void setServerArgs(const std::string &serverArgs);
+    void setServerArgs(const std::string& serverArgs);
 
     std::string clientArgs() const;
-    void setClientArgs(const std::string &clientArgs);
+    void setClientArgs(const std::string& clientArgs);
 
     std::string callRpcName() const;
-    void setCallRpcName(const std::string &callRpcName);
+    void setCallRpcName(const std::string& callRpcName);
 
     bool needEnumInHeader() const;
     void setNeedEnumInHeader(bool needEnumInHeader);
