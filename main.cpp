@@ -5,6 +5,9 @@
 #include <string.h>
 #include <errno.h>
 
+#include "parser.h"
+#include "settings.h"
+
 struct FilesHandles
 {
     std::istream* fileInputPtr;
@@ -103,10 +106,32 @@ int main(int argc, char* argv[])
         }
     }
 
-    //// Read input file =======================================================
+    //// Create settings =======================================================
 
-    for(std::string line; getline(*filesHandles.fileInputPtr, line );)
+    Settings settings;
+
+    //// Create parser =========================================================
+
+    Parser parser(settings);
+
+    //// Parse input file ======================================================
+
+    int lineNumber = 0;
+
+    for(std::string line; getline(*filesHandles.fileInputPtr, line ); )
     {
+        if (not parser.parseLine(line))
+        {
+            std::cerr << "Error in line " << lineNumber << ": " << parser.getLastError() << std::endl;
+            return 2;
+        }
 
+        ++lineNumber;
     }
+
+    //// Generate files ========================================================
+
+    //// =======================================================================
+
+    return 0;
 }

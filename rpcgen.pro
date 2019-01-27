@@ -6,8 +6,10 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     settings.cpp \
-    parser.cpp
+    parser.cpp \
+    utils.cpp
 
 HEADERS += \
     settings.h \
-    parser.h
+    parser.h \
+    utils.h
