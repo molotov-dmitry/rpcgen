@@ -70,7 +70,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
             }
             else
             {
-                //TODO: wrong character error
+                mLastError = string_format("Wrong character '%c'", c);
                 return false;
             }
         }
@@ -99,7 +99,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
             }
             else
             {
-                //TODO: wrong character error
+                mLastError = string_format("Wrong character '%c'", c);
                 return false;
             }
         }
@@ -118,7 +118,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
             }
             else
             {
-                //TODO: wrong character error
+                mLastError = string_format("Wrong character '%c'", c);
                 return false;
             }
         }
@@ -166,7 +166,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 }
                 else
                 {
-                    //TODO: wrong character error
+                    mLastError = string_format("Wrong character '%c'", c);
                     return false;
                 }
             }
@@ -191,7 +191,11 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                         std::string name  = line.substr(nameStart,  nameLength);
                         std::string value = line.substr(valueStart, valueLength);
 
-                        //TODO: check name already exist
+                        if (parameters.find(name) == parameters.end())
+                        {
+                            mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
+                            return false;
+                        }
 
                         parameters[name] = value;
 
@@ -206,7 +210,11 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                         std::string name  = line.substr(nameStart,  nameLength);
                         std::string value = line.substr(valueStart, valueLength);
 
-                        //TODO: check name already exist
+                        if (parameters.find(name) == parameters.end())
+                        {
+                            mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
+                            return false;
+                        }
 
                         parameters[name] = value;
 
@@ -268,7 +276,11 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 std::string name  = line.substr(nameStart,  nameLength);
                 std::string value = line.substr(valueStart, valueLength);
 
-                //TODO: check name already exist
+                if (parameters.find(name) == parameters.end())
+                {
+                    mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
+                    return false;
+                }
 
                 parameters[name] = value;
 
@@ -281,7 +293,11 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 std::string name  = line.substr(nameStart,  nameLength);
                 std::string value = line.substr(valueStart, valueLength);
 
-                //TODO: check name already exist
+                if (parameters.find(name) == parameters.end())
+                {
+                    mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
+                    return false;
+                }
 
                 parameters[name] = value;
 
@@ -291,7 +307,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
             }
             else
             {
-                //TODO: wrong character error
+                mLastError = string_format("Wrong character '%c'", c);
                 return false;
             }
         }
@@ -305,7 +321,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
             else
             {
                 //TODO: add comment support
-                //TODO: wrong character error
+                mLastError = string_format("Wrong character '%c'", c);
                 return false;
             }
         }
@@ -314,7 +330,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
 
     if (state != MethodParametersState::PARSE_FINISHED)
     {
-        //TODO: parse not finished error
+        mLastError = string_format("Illegal characters after method custom parameters");
         return false;
     }
 
@@ -366,7 +382,7 @@ bool Parser::parseLine(const std::string& rawLine)
             }
             else
             {
-                //TODO: error
+                mLastError = string_format("Wrong include directive");
                 return false;
             }
         }
@@ -394,7 +410,7 @@ bool Parser::parseLine(const std::string& rawLine)
 
             if (methodNameParams.size() < 1)
             {
-                //TODO: error
+                mLastError = string_format("Missing method name");
                 return false;
             }
 
