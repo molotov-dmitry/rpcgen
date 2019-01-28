@@ -105,6 +105,11 @@ void Settings::setNeedEnumInHeader(bool needEnumInHeader)
     mNeedEnumInHeader = needEnumInHeader;
 }
 
+std::list<std::string> Settings::serverParametersKeys() const
+{
+    return mServerParametersKeys;
+}
+
 std::map<std::string, Args> Settings::serverParameters() const
 {
     return mServerParameters;
@@ -114,7 +119,13 @@ void Settings::addServerParameter(const std::string name, const std::string& typ
 {
     //TODO: check if this name already exist
 
+    mServerParametersKeys.push_back(name);
     mServerParameters[name] = Args{type, defaultValue};
+}
+
+std::list<std::string> Settings::clientParametersKeys() const
+{
+    return mClientParametersKeys;
 }
 
 std::map<std::string, Args> Settings::clientParameters() const
@@ -126,6 +137,7 @@ void Settings::addClientParameter(const std::string name, const std::string& typ
 {
     //TODO: check if this name already exist
 
+    mClientParametersKeys.push_back(name);
     mClientParameters[name] = Args{type, defaultValue};
 }
 

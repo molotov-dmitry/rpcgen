@@ -72,9 +72,11 @@ public:
     bool needEnumInHeader() const;
     void setNeedEnumInHeader(bool needEnumInHeader);
 
+    std::list<std::string> serverParametersKeys() const;
     std::map<std::string, Args> serverParameters() const;
     void addServerParameter(const std::string name, const std::string& type, const std::string& defaultValue);
 
+    std::list<std::string> clientParametersKeys() const;
     std::map<std::string, Args> clientParameters() const;
     void addClientParameter(const std::string name, const std::string& type, const std::string& defaultValue);
 
@@ -101,6 +103,9 @@ private:
     std::string mCallRpcName;
 
     bool        mNeedEnumInHeader;
+
+    std::list<std::string> mServerParametersKeys;
+    std::list<std::string> mClientParametersKeys;
 
     std::map<std::string, Args> mServerParameters;
     std::map<std::string, Args> mClientParameters;

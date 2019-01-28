@@ -191,7 +191,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                         std::string name  = line.substr(nameStart,  nameLength);
                         std::string value = line.substr(valueStart, valueLength);
 
-                        if (parameters.find(name) == parameters.end())
+                        if (parameters.find(name) != parameters.end())
                         {
                             mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
                             return false;
@@ -210,7 +210,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                         std::string name  = line.substr(nameStart,  nameLength);
                         std::string value = line.substr(valueStart, valueLength);
 
-                        if (parameters.find(name) == parameters.end())
+                        if (parameters.find(name) != parameters.end())
                         {
                             mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
                             return false;
@@ -276,7 +276,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 std::string name  = line.substr(nameStart,  nameLength);
                 std::string value = line.substr(valueStart, valueLength);
 
-                if (parameters.find(name) == parameters.end())
+                if (parameters.find(name) != parameters.end())
                 {
                     mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
                     return false;
@@ -293,7 +293,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 std::string name  = line.substr(nameStart,  nameLength);
                 std::string value = line.substr(valueStart, valueLength);
 
-                if (parameters.find(name) == parameters.end())
+                if (parameters.find(name) != parameters.end())
                 {
                     mLastError = string_format("Method custom parameter '%s' already exist", name.c_str());
                     return false;

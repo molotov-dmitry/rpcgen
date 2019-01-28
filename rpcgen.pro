@@ -7,9 +7,13 @@ CONFIG -= qt
 SOURCES += main.cpp \
     settings.cpp \
     parser.cpp \
-    utils.cpp
+    utils.cpp \
+    generator.cpp \
+    generatorserverheader.cpp
 
 HEADERS += \
     settings.h \
     parser.h \
-    utils.h
+    utils.h \
+    generator.h \
+    generatorserverheader.h

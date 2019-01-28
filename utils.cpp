@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string.h>
+#include <algorithm>
 
 std::string string_format(const char* format, ...)
 {
@@ -206,7 +207,7 @@ std::vector<std::string> split_vector(const std::string& str, char sep, bool rem
     std::vector<std::string> result
     {
         std::make_move_iterator(std::begin(list)),
-        std::make_move_iterator(std::end(list)) };
+                std::make_move_iterator(std::end(list)) };
 
     return result;
 }
@@ -218,6 +219,33 @@ std::list<std::string> keys(const std::map<std::string, std::string>& stringMap)
     for (std::map<std::string, std::string>::const_iterator it = stringMap.begin(); it != stringMap.end(); ++it)
     {
         result.push_back(it->first);
+    }
+
+    return result;
+}
+
+std::string to_upper(std::string str)
+{
+    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c)
+    {
+        return std::toupper(c);
+    });
+
+    return str;
+}
+
+std::string join(const std::list<std::string> &l, const char* delimiter)
+{
+    std::string result;
+
+    for (std::list<std::string>::const_iterator p = l.begin(); p != l.end(); ++p)
+    {
+        if (p != l.begin())
+        {
+            result += delimiter;
+        }
+
+        result += *p;
     }
 
     return result;

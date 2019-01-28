@@ -8,6 +8,8 @@
 #include "parser.h"
 #include "settings.h"
 
+#include "generatorserverheader.h"
+
 struct FilesHandles
 {
     std::istream* fileInputPtr;
@@ -130,6 +132,12 @@ int main(int argc, char* argv[])
     }
 
     //// Generate files ========================================================
+
+    //// header ----------------------------------------------------------------
+
+    GeneratorServerHeader gsh(settings);
+
+    gsh.generate(filesHandles.fileServerHeader);
 
     //// =======================================================================
 
