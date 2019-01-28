@@ -9,11 +9,13 @@ SOURCES += main.cpp \
     parser.cpp \
     utils.cpp \
     generator.cpp \
-    generatorserverheader.cpp
+    generatorserverheader.cpp \
+    generatorserversource.cpp
 
 HEADERS += \
     settings.h \
     parser.h \
     utils.h \
     generator.h \
-    generatorserverheader.h
+    generatorserverheader.h \
+    generatorserversource.h

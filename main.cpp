@@ -9,6 +9,7 @@
 #include "settings.h"
 
 #include "generatorserverheader.h"
+#include "generatorserversource.h"
 
 struct FilesHandles
 {
@@ -138,6 +139,12 @@ int main(int argc, char* argv[])
     GeneratorServerHeader gsh(settings);
 
     gsh.generate(filesHandles.fileServerHeader);
+
+    //// Source ----------------------------------------------------------------
+
+    GeneratorServerSource gss(settings);
+
+    gss.generate(filesHandles.fileServerSource);
 
     //// =======================================================================
 

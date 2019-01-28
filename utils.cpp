@@ -250,3 +250,8 @@ std::string join(const std::list<std::string> &l, const char* delimiter)
 
     return result;
 }
+
+bool contains(const std::map<std::string, std::string> &stringMap, const std::string& str)
+{
+    return (stringMap.find(str) != stringMap.end());
+}

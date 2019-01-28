@@ -34,6 +34,8 @@ std::string trimmed(const std::string& str);
 
 bool contains(const std::string& str, const char* substr);
 
+bool contains(const std::map<std::string, std::string>& stringMap, const std::string &str);
+
 std::list<std::string> keys(const std::map<std::string, std::string>& stringMap);
 
 #endif // UTILS_H
