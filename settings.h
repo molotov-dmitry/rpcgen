@@ -22,6 +22,8 @@ enum DataType
 struct DataArg
 {
     std::string type;
+    std::string size;
+
     bool        noptr  = false;
     bool        varLen = false;
 };
@@ -30,6 +32,8 @@ struct Data
 {
     DataType    type = DATA_EMPTY_LINE;
     std::string name;
+
+    bool        sendWait = false;
 
     DataArg     in;
     DataArg     out;
@@ -69,16 +73,25 @@ public:
     std::string callRpcName() const;
     void setCallRpcName(const std::string& callRpcName);
 
+    std::string beforeCall() const;
+    void setBeforeCall(const std::string& beforeCall);
+
+    std::string afterCall() const;
+    void setAfterCall(const std::string& afterCall);
+
     bool needEnumInHeader() const;
     void setNeedEnumInHeader(bool needEnumInHeader);
 
+    bool needTerminator() const;
+    void setNeedTerminator(bool needTerminator);
+
     std::list<std::string> serverParametersKeys() const;
     std::map<std::string, Args> serverParameters() const;
-    void addServerParameter(const std::string name, const std::string& type, const std::string& defaultValue);
+    bool addServerParameter(const std::string name, const std::string& type, const std::string& defaultValue);
 
     std::list<std::string> clientParametersKeys() const;
     std::map<std::string, Args> clientParameters() const;
-    void addClientParameter(const std::string name, const std::string& type, const std::string& defaultValue);
+    bool addClientParameter(const std::string name, const std::string& type, const std::string& defaultValue);
 
     std::list<std::string> includes() const;
     void addInclude(const std::string& include);
@@ -102,7 +115,11 @@ private:
 
     std::string mCallRpcName;
 
+    std::string mBeforeCall;
+    std::string mAfterCall;
+
     bool        mNeedEnumInHeader;
+    bool        mNeedTerminator;
 
     std::list<std::string> mServerParametersKeys;
     std::list<std::string> mClientParametersKeys;

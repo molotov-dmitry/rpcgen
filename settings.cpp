@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings::Settings() : mNeedEnumInHeader(false)
+Settings::Settings() : mNeedEnumInHeader(false), mNeedTerminator(false)
 {
 
 }
@@ -95,6 +95,26 @@ void Settings::setCallRpcName(const std::string& callRpcName)
     mCallRpcName = callRpcName;
 }
 
+std::string Settings::beforeCall() const
+{
+    return mBeforeCall;
+}
+
+void Settings::setBeforeCall(const std::string& beforeCall)
+{
+    mBeforeCall = beforeCall;
+}
+
+std::string Settings::afterCall() const
+{
+    return mAfterCall;
+}
+
+void Settings::setAfterCall(const std::string& afterCall)
+{
+    mAfterCall = afterCall;
+}
+
 bool Settings::needEnumInHeader() const
 {
     return mNeedEnumInHeader;
@@ -103,6 +123,16 @@ bool Settings::needEnumInHeader() const
 void Settings::setNeedEnumInHeader(bool needEnumInHeader)
 {
     mNeedEnumInHeader = needEnumInHeader;
+}
+
+bool Settings::needTerminator() const
+{
+    return mNeedTerminator;
+}
+
+void Settings::setNeedTerminator(bool needTerminator)
+{
+    mNeedTerminator = needTerminator;
 }
 
 std::list<std::string> Settings::serverParametersKeys() const
@@ -115,12 +145,17 @@ std::map<std::string, Args> Settings::serverParameters() const
     return mServerParameters;
 }
 
-void Settings::addServerParameter(const std::string name, const std::string& type, const std::string& defaultValue)
+bool Settings::addServerParameter(const std::string name, const std::string& type, const std::string& defaultValue)
 {
-    //TODO: check if this name already exist
+    if (mServerParameters.find(name) != mServerParameters.end())
+    {
+        return false;
+    }
 
     mServerParametersKeys.push_back(name);
     mServerParameters[name] = Args{type, defaultValue};
+
+    return true;
 }
 
 std::list<std::string> Settings::clientParametersKeys() const
@@ -133,12 +168,17 @@ std::map<std::string, Args> Settings::clientParameters() const
     return mClientParameters;
 }
 
-void Settings::addClientParameter(const std::string name, const std::string& type, const std::string& defaultValue)
+bool Settings::addClientParameter(const std::string name, const std::string& type, const std::string& defaultValue)
 {
-    //TODO: check if this name already exist
+    if (mClientParameters.find(name) != mClientParameters.end())
+    {
+        return false;
+    }
 
     mClientParametersKeys.push_back(name);
     mClientParameters[name] = Args{type, defaultValue};
+
+    return true;
 }
 
 std::list<std::string> Settings::includes() const

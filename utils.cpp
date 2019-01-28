@@ -207,7 +207,7 @@ std::vector<std::string> split_vector(const std::string& str, char sep, bool rem
     std::vector<std::string> result
     {
         std::make_move_iterator(std::begin(list)),
-                std::make_move_iterator(std::end(list)) };
+        std::make_move_iterator(std::end(list)) };
 
     return result;
 }
@@ -234,7 +234,7 @@ std::string to_upper(std::string str)
     return str;
 }
 
-std::string join(const std::list<std::string> &l, const char* delimiter)
+std::string join(const std::list<std::string>& l, const char* delimiter)
 {
     std::string result;
 
@@ -251,7 +251,7 @@ std::string join(const std::list<std::string> &l, const char* delimiter)
     return result;
 }
 
-bool contains(const std::map<std::string, std::string> &stringMap, const std::string& str)
+bool contains(const std::map<std::string, std::string>& stringMap, const std::string& str)
 {
     return (stringMap.find(str) != stringMap.end());
 }

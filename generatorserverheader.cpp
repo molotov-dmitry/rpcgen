@@ -48,6 +48,20 @@ void GeneratorServerHeader::generate(std::ostream& stream)
 
     stream << std::endl;
 
+    if (not mSettings.beforeCall().empty())
+    {
+        stream << mSettings.returnType() << " " << mSettings.beforeCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+
+        stream << std::endl;
+    }
+
+    if (not mSettings.afterCall().empty())
+    {
+        stream << "void" << " " << mSettings.afterCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+
+        stream << std::endl;
+    }
+
     //// Enum ==================================================================
 
     if (mSettings.needEnumInHeader())
@@ -104,7 +118,7 @@ void GeneratorServerHeader::generate(std::ostream& stream)
     stream << "    RPC_F f;" << std::endl;
     stream << "    int   in_len;" << std::endl;
     stream << "    int   out_len;" << std::endl;
-//    stream << "    int   flags;" << std::endl;
+    //    stream << "    int   flags;" << std::endl;
 
     if (not mSettings.serverParametersKeys().empty())
     {

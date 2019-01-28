@@ -22,7 +22,7 @@ std::string to_upper(std::string str);
 std::list<std::string> split(const std::string& str, char sep, bool removeEmpty = false);
 std::vector<std::string> split_vector(const std::string& str, char sep, bool removeEmpty = false);
 
-std::string join(const std::list<std::string>& l, const char *delimiter);
+std::string join(const std::list<std::string>& l, const char* delimiter);
 
 bool between(const std::string& str, const char* from, const char* to, std::string& res);
 std::string before(const std::string& str, const char* to);
@@ -34,7 +34,7 @@ std::string trimmed(const std::string& str);
 
 bool contains(const std::string& str, const char* substr);
 
-bool contains(const std::map<std::string, std::string>& stringMap, const std::string &str);
+bool contains(const std::map<std::string, std::string>& stringMap, const std::string& str);
 
 std::list<std::string> keys(const std::map<std::string, std::string>& stringMap);
 

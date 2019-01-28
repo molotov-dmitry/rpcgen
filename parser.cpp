@@ -232,7 +232,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 {
                     if (c == '\'')
                     {
-                        valueLength = i - valueStart - 1;
+                        valueLength = i - valueStart;
 
                         state = MethodParametersState::AFTER_VALUE;
 
@@ -248,7 +248,7 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
                 {
                     if (c == '"')
                     {
-                        valueLength = i - valueStart;
+                        valueLength = i - valueStart + 1;
 
                         state = MethodParametersState::AFTER_VALUE;
 
@@ -427,6 +427,10 @@ bool Parser::parseLine(const std::string& rawLine)
                 {
                     methodData.in.varLen = true;
                 }
+                else if (*it == "SEND_WAIT")
+                {
+                    methodData.sendWait = true;
+                }
                 else
                 {
                     mLastError = string_format("Unknown method modifier '%s'", (*it).c_str());
@@ -451,6 +455,8 @@ bool Parser::parseLine(const std::string& rawLine)
                 std::vector<std::string> methodParam = split_vector(*it, ' ', true);
 
                 bool noptr = false;
+                std::string type;
+                std::string size;
 
                 if ((methodParam.size() == 3) && (methodParam[1] == "NOPTR"))
                 {
@@ -461,17 +467,38 @@ bool Parser::parseLine(const std::string& rawLine)
                     mLastError = string_format("Too many parameter options");
                     return false;
                 }
-                else
+
+
                 {
+                    type = methodParam.back();
+
+                    if (contains(type, "="))
+                    {
+                        std::vector<std::string> typeInfo = split_vector(type, '=', true);
+
+                        if (typeInfo.size() == 2 && typeInfo[0] == "SIZE")
+                        {
+                            type = "void";
+                            size = typeInfo[1];
+                        }
+                        else
+                        {
+                            mLastError = string_format("Unknown parameter options");
+                            return false;
+                        }
+                    }
+
                     if (methodParam[0] == "OUT")
                     {
-                        methodData.out.type  = methodParam.back();
+                        methodData.out.type  = type;
                         methodData.out.noptr = noptr;
+                        methodData.out.size  = size;
                     }
                     else if (methodParam[0] == "IN")
                     {
-                        methodData.in.type  = methodParam.back();
+                        methodData.in.type  = type;
                         methodData.in.noptr = noptr;
+                        methodData.in.size  = size;
                     }
                     else
                     {
@@ -539,9 +566,21 @@ bool Parser::parseLine(const std::string& rawLine)
         {
             mSettings.setCallRpcName(settingValue);
         }
+        else if (isSetting(line, "BEFORE_CALL", true, &settingValue))
+        {
+            mSettings.setBeforeCall(settingValue);
+        }
+        else if (isSetting(line, "AFTER_CALL", true, &settingValue))
+        {
+            mSettings.setAfterCall(settingValue);
+        }
         else if (isSetting(line, "NEED_ENUM_IN_HDR"))
         {
             mSettings.setNeedEnumInHeader(true);
+        }
+        else if (isSetting(line, "NEED_TERMINATOR"))
+        {
+            mSettings.setNeedTerminator(true);
         }
 
         //// Parameters ========================================================
