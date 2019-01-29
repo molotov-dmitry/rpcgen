@@ -95,7 +95,7 @@ void GeneratorServerSource::generate(std::ostream& stream)
 
             //// flags ---------------------------------------------------------
 
-            //parameters.push_back("0");
+            rpcItem.push_back("0");
 
             //// Server parameters ---------------------------------------------
 
@@ -124,6 +124,11 @@ void GeneratorServerSource::generate(std::ostream& stream)
 
             stream << "    {" << join(rpcItem, ", ") << "}," << std::endl;
         }
+    }
+
+    if (mSettings.needTerminator())
+    {
+        stream << "    {0}," << std::endl;
     }
 
     stream << "};" << std::endl;
