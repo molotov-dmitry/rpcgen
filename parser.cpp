@@ -714,6 +714,26 @@ bool Parser::isSetting(const std::string& line, const char* name, bool haveValue
 
     if (starts_with(line, name) && ends_with(line, ";") && between(line, name, ";", val))
     {
+        trim(val);
+
+        std::string quotedValue;
+
+        if (between(val, "\"", "\"", quotedValue))
+        {
+            if (not haveValue)
+            {
+                return false;
+            }
+
+            if (value)
+            {
+                *value = quotedValue;
+            }
+
+            return true;
+
+        }
+
         std::list<std::string> values = split(val, ' ', true);
 
         if (haveValue)

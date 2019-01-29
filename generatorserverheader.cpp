@@ -166,8 +166,20 @@ void GeneratorServerHeader::generate(std::ostream& stream)
         stream << title("Server", 1) << std::endl;
         stream << std::endl;
 
-        stream << mSettings.returnType() << " call_" << mSettings.rpcName() << "(unsigned int id, void* buf_in, int in_len, void* buf_out, int* out_len);" << std::endl;
+        std::list<std::string> serverCallParameters;
 
+        if (not mSettings.serverArgs().empty())
+        {
+            serverCallParameters.push_back(mSettings.serverArgs());
+        }
+
+        serverCallParameters.push_back("unsigned int id");
+        serverCallParameters.push_back("void* buf_in");
+        serverCallParameters.push_back("int in_len");
+        serverCallParameters.push_back("void* buf_out");
+        serverCallParameters.push_back("int* out_len");
+
+        stream << mSettings.returnType() << " call_" << mSettings.rpcName() << "(" << join(serverCallParameters, ", ") << ");" << std::endl;
         stream << std::endl;
 
         if (not mSettings.beforeCall().empty())
@@ -192,10 +204,30 @@ void GeneratorServerHeader::generate(std::ostream& stream)
         stream << title("Client", 1) << std::endl;
         stream << std::endl;
 
-        stream << mSettings.returnType() << " " << mSettings.funcSend() << "(void* in, void* out, " << mSettings.rpcName() <<  "_clnt* rpc_p);" << std::endl;
+        std::list<std::string> clientSendParameters;
+
+        if (not mSettings.clientArgs().empty())
+        {
+            clientSendParameters.push_back(mSettings.clientArgs());
+        }
+
+        clientSendParameters.push_back("void* in");
+        clientSendParameters.push_back("void* out");
+        clientSendParameters.push_back(mSettings.rpcName() +  "_clnt* rpc_p");
+
+        std::list<std::string> clientWaitParameters;
+
+        if (not mSettings.clientArgs().empty())
+        {
+            clientWaitParameters.push_back(mSettings.clientArgs());
+        }
+
+        clientWaitParameters.push_back("void* rpc_p");
+
+        stream << mSettings.returnType() << " " << mSettings.funcSend() << "(" << join(clientSendParameters, ", ") << ");" << std::endl;
         stream << std::endl;
 
-        stream << mSettings.returnType() << " " << mSettings.funcRecv() << "(void* rpc_p);" << std::endl;
+        stream << mSettings.returnType() << " " << mSettings.funcRecv() << "(" << join(clientWaitParameters, ", ") << ");" << std::endl;
         stream << std::endl;
 
     }
