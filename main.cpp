@@ -15,6 +15,8 @@ struct FilesHandles
 {
     std::istream* fileInputPtr;
     std::ifstream fileInput;
+
+    std::ofstream fileCommonHeader;
     std::ofstream fileServerSource;
     std::ofstream fileServerHeader;
     std::ofstream fileClientSource;
@@ -58,6 +60,18 @@ int main(int argc, char* argv[])
             }
 
             filesHandles.fileInputPtr = &filesHandles.fileInput;
+        }
+        else if (strcmp(argv[i], "-h") == 0)
+        {
+            if (i == argc - 1)
+            {
+                //TODO: error
+            }
+
+            if (not openOutputFile(argv[i + 1], filesHandles.fileCommonHeader))
+            {
+                return 1;
+            }
         }
         else if (strcmp(argv[i], "-ss") == 0)
         {
@@ -134,11 +148,23 @@ int main(int argc, char* argv[])
 
     //// Generate files ========================================================
 
-    //// header ----------------------------------------------------------------
+    //// commont header --------------------------------------------------------
 
-    GeneratorServerHeader gsh(settings);
+    GeneratorServerHeader gh(settings, true, true);
+
+    gh.generate(filesHandles.fileCommonHeader);
+
+    //// server header ---------------------------------------------------------
+
+    GeneratorServerHeader gsh(settings, false, true);
 
     gsh.generate(filesHandles.fileServerHeader);
+
+    //// client header ---------------------------------------------------------
+
+    GeneratorServerHeader gch(settings, true, false);
+
+    gch.generate(filesHandles.fileClientHeader);
 
     //// Source ----------------------------------------------------------------
 

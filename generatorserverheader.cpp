@@ -2,7 +2,10 @@
 
 #include "utils.h"
 
-GeneratorServerHeader::GeneratorServerHeader(const Settings& settings) : Generator(settings)
+GeneratorServerHeader::GeneratorServerHeader(const Settings& settings, bool generateClient, bool generateServer) :
+    Generator(settings),
+    mGenerateClient(generateClient),
+    mGenerateServer(generateServer)
 {
 
 }
@@ -38,34 +41,172 @@ void GeneratorServerHeader::generate(std::ostream& stream)
 
     //// Type definitions ======================================================
 
-    stream << "typedef " << mSettings.returnType() << "(*RPC_F)();" << std::endl;
-
+    stream << title("Type definitions") << std::endl;
     stream << std::endl;
 
-    //// Function declarations =================================================
+    //// Server ----------------------------------------------------------------
 
-    stream << mSettings.returnType() << " call_" << mSettings.rpcName() << "(unsigned int id, void* buf_in, int in_len, void* buf_out, int* out_len);" << std::endl;
-
-    stream << std::endl;
-
-    if (not mSettings.beforeCall().empty())
+    if (mGenerateServer)
     {
-        stream << mSettings.returnType() << " " << mSettings.beforeCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+        stream << title("Server", 1) << std::endl;
+        stream << std::endl;
+
+        stream << "typedef " << mSettings.returnType() << "(*RPC_F)();" << std::endl;
 
         stream << std::endl;
     }
 
-    if (not mSettings.afterCall().empty())
+    //// Parameters ============================================================
+
+    stream << title("Parameters") << std::endl;
+    stream << std::endl;
+
+    //// Client ----------------------------------------------------------------
+
+    if (mGenerateClient)
     {
-        stream << "void" << " " << mSettings.afterCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+        stream << title("Client", 1) << std::endl;
+        stream << std::endl;
+
+        //// RPC item with parameters ------------------------------------------
+
+        stream << "struct " << mSettings.rpcName() << "_clnt" << std::endl;
+
+        stream << "{" << std::endl;
+
+        stream << "    unsigned int id;" << std::endl;
+        stream << "    int          send_len;" << std::endl;
+        stream << "    int          recv_len;" << std::endl;
+
+        if (not mSettings.clientParametersKeys().empty())
+        {
+            std::map<std::string, Args> clientParameters = mSettings.clientParameters();
+
+            for (const std::string& param : mSettings.clientParametersKeys())
+            {
+                stream << "    " << clientParameters[param].type << " " << param << ";" << std::endl;
+            }
+        }
+
+        stream << "};" << std::endl;
 
         stream << std::endl;
+
+    }
+
+    //// Server ----------------------------------------------------------------
+
+    if (mGenerateServer)
+    {
+        stream << title("Server", 1) << std::endl;
+        stream << std::endl;
+
+        //// Server parameters structure ---------------------------------------
+
+        if (not mSettings.serverParametersKeys().empty())
+        {
+            std::map<std::string, Args> serverParameters = mSettings.serverParameters();
+
+            stream << "struct " << mSettings.rpcName() << "_srvr" << std::endl;
+
+            stream << "{" << std::endl;
+
+            for (const std::string& param : mSettings.serverParametersKeys())
+            {
+                stream << "    " << serverParameters[param].type << " " << param << ";" << std::endl;
+            }
+
+            stream << "};" << std::endl;
+
+            stream << std::endl;
+        }
+
+        //// RPC item ----------------------------------------------------------
+
+        stream << "struct " << mSettings.rpcName() << "_rpc_item" << std::endl;
+
+        stream << "{" << std::endl;
+
+        stream << "    RPC_F f;" << std::endl;
+        stream << "    int   in_len;" << std::endl;
+        stream << "    int   out_len;" << std::endl;
+        stream << "    int   flags;" << std::endl;
+
+        if (not mSettings.serverParametersKeys().empty())
+        {
+            stream << "    " << mSettings.rpcName() << "_srvr param;" << std::endl;
+        }
+
+        stream << "};" << std::endl;
+
+        stream << std::endl;
+    }
+
+    //// RPC items array =======================================================
+
+    stream << title("RPC items") << std::endl;
+    stream << std::endl;
+
+    if (mGenerateServer)
+    {
+        stream << "extern const " << mSettings.rpcName() << "_rpc_item " << mSettings.rpcName() << "_rpc_tab[];" << std::endl;
+
+        stream << std::endl;
+    }
+
+    //// Function declarations =================================================
+
+    stream << title("Function declarations") << std::endl;
+    stream << std::endl;
+
+    //// Server ----------------------------------------------------------------
+
+    if (mGenerateServer)
+    {
+        stream << title("Server", 1) << std::endl;
+        stream << std::endl;
+
+        stream << mSettings.returnType() << " call_" << mSettings.rpcName() << "(unsigned int id, void* buf_in, int in_len, void* buf_out, int* out_len);" << std::endl;
+
+        stream << std::endl;
+
+        if (not mSettings.beforeCall().empty())
+        {
+            stream << mSettings.returnType() << " " << mSettings.beforeCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+
+            stream << std::endl;
+        }
+
+        if (not mSettings.afterCall().empty())
+        {
+            stream << "void" << " " << mSettings.afterCall() << "(const " << mSettings.rpcName() << "_srvr* p);" << std::endl;
+
+            stream << std::endl;
+        }
+    }
+
+    //// Client ----------------------------------------------------------------
+
+    if (mGenerateClient)
+    {
+        stream << title("Client", 1) << std::endl;
+        stream << std::endl;
+
+        stream << mSettings.returnType() << " " << mSettings.funcSend() << "(void* in, void* out, " << mSettings.rpcName() <<  "_clnt* rpc_p);" << std::endl;
+        stream << std::endl;
+
+        stream << mSettings.returnType() << " " << mSettings.funcRecv() << "(void* rpc_p);" << std::endl;
+        stream << std::endl;
+
     }
 
     //// Enum ==================================================================
 
     if (mSettings.needEnumInHeader())
     {
+        stream << title("Methods id list") << std::endl;
+        stream << std::endl;
+
         stream << "enum" << std::endl;
 
         stream << "{" << std::endl;
@@ -89,53 +230,10 @@ void GeneratorServerHeader::generate(std::ostream& stream)
         stream << std::endl;
     }
 
-    //// Server parameters structure ===========================================
-
-    if (not mSettings.serverParametersKeys().empty())
-    {
-        std::map<std::string, Args> serverParameters = mSettings.serverParameters();
-
-        stream << "struct " << mSettings.rpcName() << "_srvr" << std::endl;
-
-        stream << "{" << std::endl;
-
-        for (const std::string& param : mSettings.serverParametersKeys())
-        {
-            stream << "    " << serverParameters[param].type << " " << param << ";" << std::endl;
-        }
-
-        stream << "};" << std::endl;
-
-        stream << std::endl;
-    }
-
-    //// RPC item ==============================================================
-
-    stream << "struct " << mSettings.rpcName() << "_rpc_item" << std::endl;
-
-    stream << "{" << std::endl;
-
-    stream << "    RPC_F f;" << std::endl;
-    stream << "    int   in_len;" << std::endl;
-    stream << "    int   out_len;" << std::endl;
-    stream << "    int   flags;" << std::endl;
-
-    if (not mSettings.serverParametersKeys().empty())
-    {
-        stream << "    " << mSettings.rpcName() << "_srvr param;" << std::endl;
-    }
-
-    stream << "};" << std::endl;
-
-    stream << std::endl;
-
-    //// RPC items array =======================================================
-
-    stream << "extern const " << mSettings.rpcName() << "_rpc_item " << mSettings.rpcName() << "_rpc_tab[];" << std::endl;
-
-    stream << std::endl;
-
     //// Methods list ==========================================================
+
+    stream << title("Methods") << std::endl;
+    stream << std::endl;
 
     bool dataStarted = false;
 
@@ -160,6 +258,21 @@ void GeneratorServerHeader::generate(std::ostream& stream)
         else if (data.type == DATA_METHOD)
         {
             std::list<std::string> parameters;
+
+            if (mGenerateClient)
+            {
+                if (not mSettings.clientArgs().empty())
+                {
+                    parameters.push_back(mSettings.clientArgs());
+                }
+            }
+            else if (mGenerateServer)
+            {
+                if (not mSettings.serverArgs().empty())
+                {
+                    parameters.push_back(mSettings.serverArgs());
+                }
+            }
 
             if (not data.in.type.empty())
             {

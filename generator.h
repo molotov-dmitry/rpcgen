@@ -15,6 +15,8 @@ public:
 protected:
 
     const Settings& mSettings;
+
+    static std::string title(std::string str, int level = 0);
 };
 
 #endif // GENERATOR_H
