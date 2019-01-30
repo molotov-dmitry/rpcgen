@@ -5,7 +5,7 @@ CC              = g++
 CLIENT_SRC      = $(wildcard *.cpp)
 CLIENT_OBJ      = $(patsubst %.cpp,$(OBJDIR)/%.o,$(CLIENT_SRC))
 
-CXXFLAGS        = -m32 -Wall -Wextra -pedantic -fPIC
+CXXFLAGS        = -m32 -Wall -Wextra -pedantic -fPIC -O2 -Os
 LDFLAGS         = -m32 -lpthread
 
 TARGET          = rpcgen
@@ -14,7 +14,7 @@ TARGET          = rpcgen
 
 all: rpcgen
 
-rpcgen: $(OBJDIR) $(CLIENT_OBJ)
+rpcgen: $(OBJDIR) $(CLIENT_OBJ) Makefile
 	$(CC) $(LDFLAGS) -o $(TARGET) $(CLIENT_OBJ)
 	strip $(TARGET)
 
@@ -31,5 +31,5 @@ clean:
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-$(OBJDIR)/%.o :%.cpp
+$(OBJDIR)/%.o :%.cpp Makefile
 	$(CC) $(CXXFLAGS) -c $< -o $@
