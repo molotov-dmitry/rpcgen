@@ -37,6 +37,7 @@ struct Data
 
     DataArg     in;
     DataArg     out;
+    DataArg     inOut;
 
     std::map<std::string, std::string> customParameters;
 };

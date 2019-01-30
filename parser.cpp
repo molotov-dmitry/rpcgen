@@ -76,8 +76,8 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
         }
 
         case MethodParametersState::NAME:
-        {
-            if (isalnum(c))
+        {   
+            if (isalnum(c) || c == '_')
             {
                 continue;
             }
@@ -496,9 +496,15 @@ bool Parser::parseLine(const std::string& rawLine)
                     }
                     else if (methodParam[0] == "IN")
                     {
-                        methodData.in.type  = type;
-                        methodData.in.noptr = noptr;
-                        methodData.in.size  = size;
+                        methodData.in.type   = type;
+                        methodData.in.noptr  = noptr;
+                        methodData.in.size   = size;
+                    }
+                    else if (methodParam[0] == "INOUT")
+                    {
+                        methodData.inOut.type  = type;
+                        methodData.inOut.noptr = noptr;
+                        methodData.inOut.size  = size;
                     }
                     else
                     {
@@ -638,31 +644,43 @@ bool Parser::parseLine(const std::string& rawLine)
         std::string type  = before(line, " ");
         std::string value = after(line, " ");
 
-        std::map<std::string, std::string> valueMap;
+        std::string name;
+        std::string defaultValue;
 
-        if (not parseCustomMethodParameters(value, valueMap))
+        if (contains(value, "="))
         {
-            //Error set by parseCustomMethodParameters();
-            return false;
-        }
+            std::map<std::string, std::string> valueMap;
 
-        std::list<std::string> valueKeys = keys(valueMap);
+            if (not parseCustomMethodParameters(value, valueMap))
+            {
+                //Error set by parseCustomMethodParameters();
+                return false;
+            }
 
-        if (valueKeys.size() != 1)
-        {
-            mLastError = "Missing name for CLINE_PARAM/SERVER_PARAM";
-            return false;
-        }
+            std::list<std::string> valueKeys = keys(valueMap);
 
-        std::string name = valueKeys.front();
+            if (valueKeys.size() != 1)
+            {
+                mLastError = "Missing name for CLIENT_PARAM/SERVER_PARAM";
+                return false;
+            }
 
-        if (mState == State::CLIENT_PARAM)
-        {
-            mSettings.addClientParameter(name, type, valueMap[name]);
+            name = valueKeys.front();
+
+            defaultValue = valueMap[name];
         }
         else
         {
-            mSettings.addServerParameter(name, type, valueMap[name]);
+            name = trimmed(before(value, ";"));
+        }
+
+        if (mState == State::CLIENT_PARAM)
+        {
+            mSettings.addClientParameter(name, type, defaultValue);
+        }
+        else
+        {
+            mSettings.addServerParameter(name, type, defaultValue);
         }
 
     }

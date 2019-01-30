@@ -16,6 +16,10 @@ protected:
 
     const Settings& mSettings;
 
+    std::string nullValue() const;
+
+    static std::string autogenerateNotify();
+
     static std::string title(std::string str, int level = 0);
 };
 

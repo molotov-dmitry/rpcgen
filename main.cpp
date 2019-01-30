@@ -5,11 +5,14 @@
 #include <string.h>
 #include <errno.h>
 
+#include "utils.h"
+
 #include "parser.h"
 #include "settings.h"
 
-#include "generatorserverheader.h"
+#include "generatorheader.h"
 #include "generatorserversource.h"
+#include "generatorclientsource.h"
 
 struct FilesHandles
 {
@@ -133,13 +136,13 @@ int main(int argc, char* argv[])
 
     //// Parse input file ======================================================
 
-    int lineNumber = 0;
+    int lineNumber = 1;
 
     for (std::string line; getline(*filesHandles.fileInputPtr, line);)
     {
         if (not parser.parseLine(line))
         {
-            std::cerr << "Error in line " << lineNumber << ": " << parser.getLastError() << std::endl;
+            std::cerr << "Error in line " << lineNumber << ": " << parser.getLastError() << " (" << trimmed(line) << ")" << std::endl;
             return 2;
         }
 
@@ -150,27 +153,33 @@ int main(int argc, char* argv[])
 
     //// commont header --------------------------------------------------------
 
-    GeneratorServerHeader gh(settings, true, true);
+    GeneratorHeader gh(settings, true, true);
 
     gh.generate(filesHandles.fileCommonHeader);
 
     //// server header ---------------------------------------------------------
 
-    GeneratorServerHeader gsh(settings, false, true);
+    GeneratorHeader gsh(settings, false, true);
 
     gsh.generate(filesHandles.fileServerHeader);
 
     //// client header ---------------------------------------------------------
 
-    GeneratorServerHeader gch(settings, true, false);
+    GeneratorHeader gch(settings, true, false);
 
     gch.generate(filesHandles.fileClientHeader);
 
-    //// Source ----------------------------------------------------------------
+    //// server source ---------------------------------------------------------
 
     GeneratorServerSource gss(settings);
 
     gss.generate(filesHandles.fileServerSource);
+
+    //// client source ---------------------------------------------------------
+
+    GeneratorClientSource gcs(settings);
+
+    gcs.generate(filesHandles.fileClientSource);
 
     //// =======================================================================
 

@@ -7,6 +7,11 @@
 #include <vector>
 #include <stdarg.h>
 
+namespace std
+{
+typedef list<string> stringlist;
+}
+
 std::string string_format(const char* format, ...);
 
 bool starts_with(const std::string& str, const std::string& start, bool case_sensitive = true);
@@ -22,7 +27,7 @@ std::string to_upper(std::string str);
 std::list<std::string> split(const std::string& str, char sep, bool removeEmpty = false);
 std::vector<std::string> split_vector(const std::string& str, char sep, bool removeEmpty = false);
 
-std::string join(const std::list<std::string>& l, const char* delimiter);
+std::string join(const std::list<std::string>& l, const char* delimiter = ", ");
 
 bool between(const std::string& str, const char* from, const char* to, std::string& res);
 std::string before(const std::string& str, const char* to);

@@ -1,6 +1,6 @@
 #include "settings.h"
 
-Settings::Settings() : mNeedEnumInHeader(false), mNeedTerminator(false)
+Settings::Settings() : mCallRpcName("call_rpc"), mNeedEnumInHeader(false), mNeedTerminator(false)
 {
 
 }
