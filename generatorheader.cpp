@@ -318,12 +318,12 @@ void GeneratorHeader::generate(std::ostream& stream)
                     param += " val";
                 }
 
-                if (data.inOut.varLen)
+                if (data.in.varLen)
                 {
                     param += ", int in_len";
                 }
 
-                if (data.inOut.varLen)
+                if (data.out.varLen)
                 {
                     param += ", int* out_len";
                 }

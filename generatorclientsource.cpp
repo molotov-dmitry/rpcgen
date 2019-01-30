@@ -155,15 +155,14 @@ void GeneratorClientSource::generate(std::ostream &stream)
 
                 parameters.push_back(param);
                 parametersSend.push_back(param);
-                parametersWait.push_back(param);
 
-                if (data.inOut.varLen)
+                if (data.in.varLen)
                 {
                     parameters.push_back("int in_len");
                     parametersSend.push_back("int in_len");
                 }
 
-                if (data.inOut.varLen)
+                if (data.out.varLen)
                 {
                     parameters.push_back("int* out_len");
                     parametersWait.push_back("int* out_len");
@@ -232,10 +231,9 @@ void GeneratorClientSource::generate(std::ostream &stream)
 
             if (not data.inOut.type.empty())
             {
-                if (data.inOut.varLen)
+                if (data.in.varLen)
                 {
                     inLength  = "in_len";
-                    outLength = "*out_len";
                 }
                 else if (not data.inOut.size.empty())
                 {
@@ -244,6 +242,18 @@ void GeneratorClientSource::generate(std::ostream &stream)
                 else
                 {
                     inLength = string_format("sizeof(%s)", data.inOut.type.c_str());
+                }
+
+                if (data.out.varLen)
+                {
+                    outLength  = "*out_len";
+                }
+                else if (not data.inOut.size.empty())
+                {
+                    outLength = data.inOut.size;
+                }
+                else
+                {
                     outLength = string_format("sizeof(%s)", data.inOut.type.c_str());
                 }
             }
@@ -361,7 +371,7 @@ void GeneratorClientSource::generate(std::ostream &stream)
             sendArguments.push_back("&t");
             waitArguments.push_back("&t");
 
-            if ((not data.inOut.type.empty() && data.inOut.varLen) || (not data.out.type.empty() && data.out.varLen))
+            if ((not data.inOut.type.empty() && data.out.varLen) || (not data.out.type.empty() && data.out.varLen))
             {
                 stream << "    " << mSettings.returnType() << " res = send_and_wait_" << mSettings.rpcName() << "(" << join(sendWaitArguments, ", ") << ");" << std::endl;
 
@@ -412,7 +422,7 @@ void GeneratorClientSource::generate(std::ostream &stream)
 
                 stream << std::endl;
 
-                if ((not data.inOut.type.empty() && data.inOut.varLen) || (not data.out.type.empty() && data.out.varLen))
+                if ((not data.inOut.type.empty() && data.out.varLen) || (not data.out.type.empty() && data.out.varLen))
                 {
                     stream << "    " << mSettings.returnType() << " res = " << mSettings.funcRecv() << "(" << join(waitArguments, ", ") << ");" << std::endl;
 

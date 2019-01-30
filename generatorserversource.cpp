@@ -65,7 +65,7 @@ void GeneratorServerSource::generate(std::ostream& stream)
 
             if (not data.inOut.type.empty())
             {
-                if (data.inOut.varLen)
+                if (data.in.varLen)
                 {
                     rpcItem.push_back("-1");
                 }
@@ -78,7 +78,7 @@ void GeneratorServerSource::generate(std::ostream& stream)
                     rpcItem.push_back("sizeof(" + data.inOut.type + ")");
                 }
 
-                if (data.inOut.varLen)
+                if (data.out.varLen)
                 {
                     rpcItem.push_back("-1");
                 }
