@@ -16,6 +16,8 @@ public:
 
     std::string getLastError() const;
 
+    std::list<std::string> getWarnings() const;
+
 private:
 
     enum class State
@@ -28,6 +30,7 @@ private:
     Settings& mSettings;
 
     std::string mLastError;
+    std::list<std::string> mWarnings;
 
     State mState;
 

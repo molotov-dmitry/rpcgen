@@ -26,6 +26,14 @@ struct DataArg
 
     bool        noptr  = false;
     bool        varLen = false;
+
+    bool operator ==(const DataArg& other) const
+    {
+        return (this->type == other.type)
+                && (this->size == other.size)
+                && (this->noptr == other.noptr)
+                && (this->varLen == other.varLen);
+    }
 };
 
 struct Data
@@ -40,6 +48,17 @@ struct Data
     DataArg     inOut;
 
     std::map<std::string, std::string> customParameters;
+
+    bool operator ==(const Data& other) const
+    {
+        return (this->type == other.type)
+                && (this->name == other.name)
+                && (this->sendWait == other.sendWait)
+                && (this->in == other.in)
+                && (this->out == other.out)
+                && (this->inOut == other.inOut)
+                && (this->customParameters == other.customParameters);
+    }
 };
 
 class Settings

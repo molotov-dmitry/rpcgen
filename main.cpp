@@ -190,6 +190,11 @@ int main(int argc, char* argv[])
             return 2;
         }
 
+        for (std::string warning : parser.getWarnings())
+        {
+            std::cerr << "Warning: " << warning << std::endl;
+        }
+
         ++lineNumber;
     }
 

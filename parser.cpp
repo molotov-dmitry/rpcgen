@@ -339,6 +339,8 @@ bool Parser::parseCustomMethodParameters(std::string line, std::map<std::string,
 
 bool Parser::parseLine(const std::string& rawLine)
 {
+    mWarnings.clear();
+
     std::string line = trimmed(rawLine);
 
     switch (mState)
@@ -524,7 +526,43 @@ bool Parser::parseLine(const std::string& rawLine)
                 return false;
             }
 
-            mSettings.addData(methodData);
+            //// Check method --------------------------------------------------
+
+            bool methodDeclared = false;;
+
+            for (const Data& data : mSettings.data())
+            {
+                if (data.type != DATA_METHOD)
+                {
+                    continue;
+                }
+
+                if (data.name != methodData.name)
+                {
+                    continue;
+                }
+
+                methodDeclared = true;
+
+                if (data == methodData)
+                {
+                    mWarnings.push_back(string_format("Method '%s' declared multiple times", methodData.name.c_str()));
+                }
+                else
+                {
+                    mLastError = string_format("Method '%s' declaration does not match previous declaration", methodData.name.c_str());
+                    return false;
+                }
+
+                break;
+            }
+
+            //// Added method --------------------------------------------------
+
+            if (not methodDeclared)
+            {
+                mSettings.addData(methodData);
+            }
         }
 
         //// Method block ======================================================
@@ -694,6 +732,11 @@ bool Parser::parseLine(const std::string& rawLine)
 std::string Parser::getLastError() const
 {
     return mLastError;
+}
+
+std::list<std::string> Parser::getWarnings() const
+{
+    return mWarnings;
 }
 
 bool Parser::isEmptyLine(const std::string& line)
