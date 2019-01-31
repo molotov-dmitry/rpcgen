@@ -255,3 +255,19 @@ bool contains(const std::map<std::string, std::string>& stringMap, const std::st
 {
     return (stringMap.find(str) != stringMap.end());
 }
+
+void replace(std::string& str, const char* from, const char* to)
+{
+    if (from == nullptr || to == nullptr || strlen(from) == 0)
+    {
+        return;
+    }
+
+    size_t start_pos = 0;
+
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+    {
+        str.replace(start_pos, strlen(from), to);
+        start_pos += strlen(to);
+    }
+}

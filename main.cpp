@@ -32,17 +32,79 @@ bool openOutputFile(const char* path, std::ofstream& file)
 
     if (not file.is_open())
     {
-        //TODO: error
         return false;
     }
 
     return true;
 }
 
+struct Stream
+{
+    const char*    flag;
+    std::ofstream& stream;
+    std::string    fileName;
+    const char*    description;
+};
+
+void usage(Stream* streams, int count)
+{
+    std::cout << "RPC call methods generator" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Usage " << "rpcgen [-options]" << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Options:" << std::endl;
+
+    std::cout << "  " << "-i" << " file    " << "Path to " << "RPC file" << std::endl;
+
+    for (int i = 0; i < count; ++i)
+    {
+        std::cout << "  " << streams[i].flag << " file    " << "Path to " << streams[i].description << std::endl;
+    }
+
+
+}
+
 int main(int argc, char* argv[])
 {
     FilesHandles filesHandles;
     filesHandles.fileInputPtr = &std::cin;
+
+    enum
+    {
+        STREAM_HEADER_CLIENTSERVER,
+        STREAM_HEADER_CLIENT,
+        STREAM_HEADER_SERVER,
+
+        STREAM_SOURCE_CLIENT,
+        STREAM_SOURCE_SERVER,
+
+        STREAM_COUNT
+    };
+
+    Stream streams[STREAM_COUNT] =
+    {
+        {"-h", filesHandles.fileCommonHeader, std::string(), "client/server header"},
+        {"-l", filesHandles.fileClientHeader, std::string(), "client header"},
+        {"-m", filesHandles.fileServerHeader, std::string(), "server header"},
+        {"-c", filesHandles.fileClientSource, std::string(), "client source"},
+        {"-t", filesHandles.fileServerSource, std::string(), "server source"},
+    };
+
+    const int streamCount = STREAM_COUNT;
+
+    //// Show usage if no parameters ===========================================
+
+    if (argc == 1)
+    {
+        usage(streams, streamCount);
+        return 1;
+    }
+
+    //// Create settings =======================================================
+
+    Settings settings;
 
     //// Open files ============================================================
 
@@ -52,83 +114,65 @@ int main(int argc, char* argv[])
         {
             if (i == argc - 1)
             {
-                //TODO: error
+                std::cerr << "Missing value for argument '" << "-i" << "'." << std::endl;
+                return 1;
             }
 
             filesHandles.fileInput.open(argv[i + 1]);
             if (not filesHandles.fileInput.is_open())
             {
-                //TODO: error
+                std::cerr << "Failed to open RPC file for reading." << std::endl;
                 return 1;
             }
 
             filesHandles.fileInputPtr = &filesHandles.fileInput;
         }
-        else if (strcmp(argv[i], "-h") == 0)
+        else
         {
-            if (i == argc - 1)
+            bool found = false;
+
+            for (int j = 0; j < streamCount; ++j)
             {
-                //TODO: error
+                if (strcmp(argv[i], streams[j].flag) == 0)
+                {
+                    if (i == argc - 1)
+                    {
+                        std::cerr << "Missing value for argument '" << streams[j].flag << "'." << std::endl;
+                        return 1;
+                    }
+
+                    if (strcmp(argv[i + 1], "/dev/null") != 0)
+                    {
+                        if (not openOutputFile(argv[i + 1], streams[j].stream))
+                        {
+                            std::cerr << "Failed to open " << streams[j].description << " for writing." << std::endl;
+                            return 1;
+                        }
+
+                        streams[j].fileName = basename(argv[i + 1]);
+
+                    }
+
+                    found = true;
+
+                    break;
+                }
             }
 
-            if (not openOutputFile(argv[i + 1], filesHandles.fileCommonHeader))
+            if (not found)
             {
-                return 1;
-            }
-        }
-        else if (strcmp(argv[i], "-ss") == 0)
-        {
-            if (i == argc - 1)
-            {
-                //TODO: error
+                std::cerr << "Unknown option '" << argv[i] << "'." << std::endl;
             }
 
-            if (not openOutputFile(argv[i + 1], filesHandles.fileServerSource))
-            {
-                return 1;
-            }
-        }
-        else if (strcmp(argv[i], "-sh") == 0)
-        {
-            if (i == argc - 1)
-            {
-                //TODO: error
-            }
 
-            if (not openOutputFile(argv[i + 1], filesHandles.fileServerHeader))
-            {
-                return 1;
-            }
-        }
-        else if (strcmp(argv[i], "-cs") == 0)
-        {
-            if (i == argc - 1)
-            {
-                //TODO: error
-            }
-
-            if (not openOutputFile(argv[i + 1], filesHandles.fileClientSource))
-            {
-                return 1;
-            }
-        }
-        else if (strcmp(argv[i], "-ch") == 0)
-        {
-            if (i == argc - 1)
-            {
-                //TODO: error
-            }
-
-            if (not openOutputFile(argv[i + 1], filesHandles.fileClientHeader))
-            {
-                return 1;
-            }
         }
     }
 
-    //// Create settings =======================================================
+    //// Set file names ========================================================
 
-    Settings settings;
+    settings.setClientServerHeader(streams[STREAM_HEADER_CLIENTSERVER].fileName);
+    settings.setClientHeader(streams[STREAM_HEADER_CLIENT].fileName);
+    settings.setServerHeader(streams[STREAM_HEADER_SERVER].fileName);
 
     //// Create parser =========================================================
 

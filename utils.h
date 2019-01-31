@@ -24,6 +24,8 @@ bool remove_quotes(std::string& str);
 
 std::string to_upper(std::string str);
 
+void replace(std::string& str, const char* from, const char* to);
+
 std::list<std::string> split(const std::string& str, char sep, bool removeEmpty = false);
 std::vector<std::string> split_vector(const std::string& str, char sep, bool removeEmpty = false);
 

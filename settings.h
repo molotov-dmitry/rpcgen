@@ -47,6 +47,15 @@ class Settings
 public:
     Settings();
 
+    std::string clientServerHeader() const;
+    void setClientServerHeader(const std::string &clientServerHeader);
+
+    std::string serverHeader() const;
+    void setServerHeader(const std::string &serverHeader);
+
+    std::string clientHeader() const;
+    void setClientHeader(const std::string &clientHeader);
+
     std::string rpcName() const;
     void setRpcName(const std::string& rpcName);
 
@@ -101,6 +110,10 @@ public:
     void addData(const Data& data);
 
 private:
+
+    std::string mClientServerHeader;
+    std::string mServerHeader;
+    std::string mClientHeader;
 
     std::string mRpcName;
     std::string mReturnType;

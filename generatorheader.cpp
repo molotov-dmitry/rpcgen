@@ -12,7 +12,27 @@ GeneratorHeader::GeneratorHeader(const Settings& settings, bool generateClient, 
 
 void GeneratorHeader::generate(std::ostream& stream)
 {
-    std::string defineName = to_upper(mSettings.rpcName()) + "_H";
+    std::string defineName;
+
+    if (mGenerateClient && mGenerateServer)
+    {
+        defineName = to_upper(mSettings.clientServerHeader());
+    }
+    else if (mGenerateClient)
+    {
+        defineName = to_upper(mSettings.clientHeader());
+    }
+    else if (mGenerateServer)
+    {
+        defineName = to_upper(mSettings.serverHeader());
+    }
+
+    if (defineName.empty())
+    {
+        defineName = to_upper(mSettings.rpcName()) + "_H";
+    }
+
+    replace(defineName, ".", "_");
 
     //// Code guard start ======================================================
 
@@ -27,6 +47,12 @@ void GeneratorHeader::generate(std::ostream& stream)
     stream << std::endl;
 
     //// Includes ==============================================================
+
+    if (not mSettings.includes().empty())
+    {
+        stream << title("Includes") << std::endl;
+        stream << std::endl;
+    }
 
     for (const std::string& include : mSettings.includes())
     {

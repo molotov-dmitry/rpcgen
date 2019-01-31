@@ -5,6 +5,36 @@ Settings::Settings() : mCallRpcName("call_rpc"), mNeedEnumInHeader(false), mNeed
 
 }
 
+std::string Settings::clientServerHeader() const
+{
+    return mClientServerHeader;
+}
+
+void Settings::setClientServerHeader(const std::string &clientServerHeader)
+{
+    mClientServerHeader = clientServerHeader;
+}
+
+std::string Settings::serverHeader() const
+{
+    return mServerHeader;
+}
+
+void Settings::setServerHeader(const std::string &serverHeader)
+{
+    mServerHeader = serverHeader;
+}
+
+std::string Settings::clientHeader() const
+{
+    return mClientHeader;
+}
+
+void Settings::setClientHeader(const std::string &clientHeader)
+{
+    mClientHeader = clientHeader;
+}
+
 std::string Settings::rpcName() const
 {
     return mRpcName;

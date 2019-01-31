@@ -16,7 +16,22 @@ void GeneratorServerSource::generate(std::ostream& stream)
 
     //// Include ===============================================================
 
-    stream << "#include \"" << mSettings.rpcName() << ".h\"" << std::endl;
+    std::string include;
+
+    if (not mSettings.serverHeader().empty())
+    {
+        include = mSettings.serverHeader();
+    }
+    else if (not mSettings.clientServerHeader().empty())
+    {
+        include  = mSettings.clientServerHeader();
+    }
+    else
+    {
+        include = mSettings.rpcName() +".h";
+    }
+
+    stream << "#include \"" << include << "\""  << std::endl;
     stream << std::endl;
 
     //// external methods ======================================================
