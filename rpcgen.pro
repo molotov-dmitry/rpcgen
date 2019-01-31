@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     generator.cpp \
     generatorserversource.cpp \
     generatorheader.cpp \
-    generatorclientsource.cpp
+    generatorclientsource.cpp \
+    generatorstub.cpp
 
 HEADERS += \
     settings.h \
@@ -22,4 +23,5 @@ HEADERS += \
     generator.h \
     generatorserversource.h \
     generatorheader.h \
-    generatorclientsource.h
+    generatorclientsource.h \
+    generatorstub.h

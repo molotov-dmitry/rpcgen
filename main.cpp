@@ -13,6 +13,7 @@
 #include "generatorheader.h"
 #include "generatorserversource.h"
 #include "generatorclientsource.h"
+#include "generatorstub.h"
 
 struct FilesHandles
 {
@@ -24,6 +25,8 @@ struct FilesHandles
     std::ofstream fileServerHeader;
     std::ofstream fileClientSource;
     std::ofstream fileClientHeader;
+
+    std::ofstream fileStub;
 };
 
 bool openOutputFile(const char* path, std::ofstream& file)
@@ -80,6 +83,8 @@ int main(int argc, char* argv[])
         STREAM_SOURCE_CLIENT,
         STREAM_SOURCE_SERVER,
 
+        STREAM_STUB,
+
         STREAM_COUNT
     };
 
@@ -90,6 +95,7 @@ int main(int argc, char* argv[])
         {"-m", filesHandles.fileServerHeader, std::string(), "server header"},
         {"-c", filesHandles.fileClientSource, std::string(), "client source"},
         {"-t", filesHandles.fileServerSource, std::string(), "server source"},
+        {"-s", filesHandles.fileStub,         std::string(), "stub"},
     };
 
     const int streamCount = STREAM_COUNT;
@@ -229,6 +235,12 @@ int main(int argc, char* argv[])
     GeneratorClientSource gcs(settings);
 
     gcs.generate(filesHandles.fileClientSource);
+
+    //// client source ---------------------------------------------------------
+
+    GeneratorStub gs(settings);
+
+    gs.generate(filesHandles.fileStub);
 
     //// =======================================================================
 
