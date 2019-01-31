@@ -315,12 +315,16 @@ void GeneratorHeader::generate(std::ostream& stream)
         else if (data.type == DATA_METHOD)
         {
             std::list<std::string> parameters;
+            std::stringlist parametersSend;
+            std::stringlist parametersWait;
 
             if (mGenerateClient)
             {
                 if (not mSettings.clientArgs().empty())
                 {
                     parameters.push_back(mSettings.clientArgs());
+                    parametersSend.push_back(mSettings.clientArgs());
+                    parametersWait.push_back(mSettings.clientArgs());
                 }
             }
             else if (mGenerateServer)
@@ -344,17 +348,20 @@ void GeneratorHeader::generate(std::ostream& stream)
                     param += " val";
                 }
 
+                parameters.push_back(param);
+                parametersSend.push_back(param);
+
                 if (data.in.varLen)
                 {
-                    param += ", int in_len";
+                    parameters.push_back("int in_len");
+                    parametersSend.push_back("int in_len");
                 }
 
                 if (data.out.varLen)
                 {
-                    param += ", int* out_len";
+                    parameters.push_back("int* out_len");
+                    parametersWait.push_back("int* out_len");
                 }
-
-                parameters.push_back(param);
             }
             else
             {
@@ -371,12 +378,14 @@ void GeneratorHeader::generate(std::ostream& stream)
                         param += " in";
                     }
 
+                    parameters.push_back(param);
+                    parametersSend.push_back(param);
+
                     if (data.in.varLen)
                     {
-                        param += ", int in_len";
+                        parameters.push_back("int in_len");
+                        parametersSend.push_back("int in_len");
                     }
-
-                    parameters.push_back(param);
                 }
 
                 if (not data.out.type.empty())
@@ -392,16 +401,24 @@ void GeneratorHeader::generate(std::ostream& stream)
                         param += " out";
                     }
 
+                    parameters.push_back(param);
+                    parametersSend.push_back(param);
+
                     if (data.out.varLen)
                     {
-                        param += ", int* out_len";
+                        parameters.push_back("int* out_len");
+                        parametersWait.push_back("int* out_len");
                     }
-
-                    parameters.push_back(param);
                 }
             }
 
-            stream << mSettings.returnType() << " " << data.name << "(" << join(parameters, ", ") << ");" << std::endl;
+            stream << mSettings.returnType() << " " << data.name << "(" << join(parameters) << ");" << std::endl;
+
+            if (mGenerateClient && data.sendWait)
+            {
+                stream << mSettings.returnType() << " " << data.name << "_send(" << join(parametersSend) << ");" << std::endl;
+                stream << mSettings.returnType() << " " << data.name << "_wait(" << join(parametersWait) << ");" << std::endl;
+            }
         }
         else if (data.type == DATA_EMPTY_LINE)
         {
