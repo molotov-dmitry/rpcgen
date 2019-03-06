@@ -5,7 +5,7 @@ CC              = g++
 CLIENT_SRC      = $(wildcard *.cpp)
 CLIENT_OBJ      = $(patsubst %.cpp,$(OBJDIR)/%.o,$(CLIENT_SRC))
 
-CXXFLAGS        = -m32 -Wall -Wextra -pedantic -fPIC -O2 -Os
+CXXFLAGS        = -m32 -Wall -Wextra -pedantic -fPIC -O2 -Os -std=c++11
 LDFLAGS         = -m32 -lpthread
 
 TARGET          = rpcgen
