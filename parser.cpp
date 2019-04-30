@@ -528,7 +528,7 @@ bool Parser::parseLine(const std::string& rawLine)
 
             //// Check method --------------------------------------------------
 
-            bool methodDeclared = false;;
+            bool methodDeclared = false;
 
             for (const Data& data : mSettings.data())
             {
@@ -557,7 +557,7 @@ bool Parser::parseLine(const std::string& rawLine)
                 break;
             }
 
-            //// Added method --------------------------------------------------
+            //// Add method ----------------------------------------------------
 
             if (not methodDeclared)
             {
@@ -569,7 +569,8 @@ bool Parser::parseLine(const std::string& rawLine)
 
         else if (isMethodBlock(line))
         {
-
+            mLastError = string_format("Method blocks is not supported");
+            return false;
         }
 
         //// Settings ==========================================================
