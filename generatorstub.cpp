@@ -153,7 +153,60 @@ void GeneratorStub::generate(std::ostream &stream)
             //// Client method body --------------------------------------------
 
             stream << "{" << std::endl;
+
+            if (not data.inOut.type.empty())
+            {
+                if (data.in.varLen && data.out.varLen)
+                {
+                    stream << "    *out_len = in_len;" << std::endl;
+                }
+                else if (data.in.varLen)
+                {
+                    stream << "    (void)in_len;" << std::endl;
+                }
+                else if (data.out.varLen)
+                {
+                    stream << "    *out_len = 0;" << std::endl;
+                }
+
+            }
+            else
+            {
+                if (not data.in.type.empty())
+                {
+                    stream << "    (void)in;" << std::endl;
+
+                    if (data.in.varLen)
+                    {
+                        stream << "    (void)in_len;" << std::endl;
+                    }
+                }
+
+                if (not data.out.type.empty())
+                {
+                    if (data.out.varLen)
+                    {
+                        stream << "    *out_len = 0;" << std::endl;
+                    }
+                    else if (data.out.size.empty())
+                    {
+                        stream << "    memset(out, 0x00, sizeof("
+                               << data.out.type
+                               << "));"
+                               << std::endl;
+                    }
+                    else
+                    {
+                        stream << "    memset(out, 0x00, "
+                               << data.out.size
+                               << ");"
+                               << std::endl;
+                    }
+                }
+            }
+
             stream << "    return 0;" << std::endl;
+
             stream << "}" << std::endl;
 
             //// ---------------------------------------------------------------
