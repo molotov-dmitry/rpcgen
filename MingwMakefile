@@ -1,12 +1,11 @@
-TARGET          := rpcgen
-INSTALLDIR      := $(PREFIX)/usr/local/bin
+TARGET          := rpcgen.exe
 
 MAKEFILE        := $(lastword $(MAKEFILE_LIST))
 
-OBJDIR          := build/obj
+OBJDIR          := build/objwin
 
-CC              := g++
-STRIP           := strip
+CC              := i686-w64-mingw32-g++-win32
+STRIP           := i686-w64-mingw32-strip
 
 VPATH           := . export
 INCLUDEPATH     := . export
@@ -15,7 +14,7 @@ DEFINES         :=
 IFLAGS          := $(patsubst %,-I%,$(INCLUDEPATH))
 DFLAGS          := $(patsubst %,-D%,$(DEFINES))
 
-SOURCES         := $(wildcard *.cpp)
+SOURCES         := $(wildcard *.cpp export/*.cpp)
 OBJECTS         := $(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
 CXXFLAGS        := -m32 -Wall -Wextra -pedantic -O2 -Os -std=gnu++11 $(IFLAGS) $(DFLAGS)
@@ -36,14 +35,6 @@ $(TARGET): $(OBJDIR) $(OBJECTS) $(MAKEFILE)
 clean:
 	rm -rf $(OBJDIR)
 	rm -f  $(TARGET)
-
-### Deployment =================================================================
-
-install: $(TARGET)
-	install $(TARGET) $(INSTALLDIR)/$(TARGET)
-
-uninstall:
-	rm -f $(INSTALLDIR)/$(TARGET)
 
 ### Objects ====================================================================
 

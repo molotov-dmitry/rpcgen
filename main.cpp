@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string.h>
 #include <errno.h>
+#include <libgen.h>
 
 #include "utils.h"
 

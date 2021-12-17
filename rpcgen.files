@@ -1,0 +1,17 @@
+generatorclientsource.cpp
+generatorclientsource.h
+generator.cpp
+generator.h
+generatorheader.cpp
+generatorheader.h
+generatorserversource.cpp
+generatorserversource.h
+generatorstub.cpp
+generatorstub.h
+main.cpp
+parser.cpp
+parser.h
+settings.cpp
+settings.h
+utils.cpp
+utils.h
