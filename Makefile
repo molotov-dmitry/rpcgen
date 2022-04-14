@@ -19,7 +19,7 @@ SOURCES         := $(wildcard *.cpp)
 OBJECTS         := $(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 
 CXXFLAGS        := -m32 -Wall -Wextra -pedantic -O2 -Os -std=gnu++11 $(IFLAGS) $(DFLAGS)
-LDFLAGS         := -m32 -static -s -Wl,--build-id=none
+LDFLAGS         := -m32 -s -Wl,--build-id=none
 
 ### ============================================================================
 
